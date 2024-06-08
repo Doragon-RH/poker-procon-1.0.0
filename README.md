@@ -10,3 +10,5 @@ npm run dev
 
 ブラウザで [http://localhost:3000](http://localhost:3000) にアクセスし、正常に起動できているか確認します。
 ※[http://localhost:3000/games](http://localhost:3000/games) にリダイレクトします。
+
+編集する部分：src/services/players 内のファイル
