@@ -1,9 +1,21 @@
 import type winston from "winston";
-
 import { getLogger } from "@/libs/logger";
-import type { GameInfo } from "@/schema/game";
+import { GameInfo, Hand } from "@/schema/game";
 import { randomByNumber } from "@/utils/game";
-
+// export const HAND_RANK: { [key in Hand]: string } = {
+//   [Hand.Drop]: 'Drop',
+//   [Hand.HighCard]: 'High Card',
+//   [Hand.OnePair]: 'One Pair',
+//   [Hand.TwoPair]: 'Two Pair',
+//   [Hand.ThreeOfAKind]: 'Three of a Kind',
+//   [Hand.Straight]: 'Straight',
+//   [Hand.Flush]: 'Flush',
+//   [Hand.FullHouse]: 'Full House',
+//   [Hand.FourOfAKind]: 'Four of a Kind',
+//   [Hand.StraightFlush]: 'Straight Flush',
+//   [Hand.RoyalStraightFlush]: 'Royal Straight Flush',
+// };
+// //これでいいのか要確認
 class TsPlayer {
   private logger: winston.Logger | null | undefined; // player logger
 
@@ -83,8 +95,16 @@ class TsPlayer {
     });
 
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
-    if (data.minBetPoint > data.initialPoint / 2) return -1;
-
+    //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
+    //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
+    const changeCards = this.getChangeCards(cards);
+    if (data.minBetPoint >= data.initialPoint / 2 && changeCards.every(card => !card.isHold)) return -1;{
+      if (Math.random() < 0.95) {
+          return -1;
+      }
+    }
+  
+   //ここにフォール度条件の追加を記述すべし
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
     this.logger?.info(
@@ -96,13 +116,41 @@ class TsPlayer {
     const point = self?.point ?? 0; // 所持ポイント
     const stack = point - diff; // 自由に使用できるポイント
     const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる
+    // //追記ゾーン
+    // const canbet =  stack > 0; // 自由に使用できるポイントが1以上あればベットが宣言できる
+    // if (canbet) {
+    //   // ベットが宣言できる場合
+    //   if (data.phase === "bet-1") {
+    //     // 1回目のベットフェーズ
+    //     // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
+    //     //if (!data.minBetPoint) return this.betUnit;
+    //     if (canbet) {
+    //       if (this.name.HAND_RANK === 'High Card') {
+    //           return -1;
+    //       } else if (this.name.HAND_RANK === 'One Pair') {
+    //           return this.betUnit;
+    //       } else if (this.name.HAND_RANK === 'Two Pair') {
+    //           return this.betUnit * 2;
+    //       } else {
+    //           return this.betUnit * 3;
+    //       }
+    //   }
+      
 
+    //   } else if (data.phase === "bet-2") {
+    //     // 2回目のベットフェーズ
+    //     // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
+    //     if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
+    //   }
+    // }
+    // //元からある部分
     if (canRaise) {
       // レイズが宣言できる場合
       if (data.phase === "bet-1") {
         // 1回目のベットフェーズ
         // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
         if (!data.minBetPoint) return this.betUnit;
+
       } else if (data.phase === "bet-2") {
         // 2回目のベットフェーズ
         // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
@@ -185,7 +233,7 @@ class TsPlayer {
           cards[i + 2].isHold = true;
           cards[i + 3].isHold = true;
         }
-      }
+      } isHold = true;
     }
 
     // ホールドしなかったカードが交換対象
