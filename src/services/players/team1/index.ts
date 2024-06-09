@@ -98,17 +98,17 @@ class TsPlayer {
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
     //const self = data.players[this.name]; // 自身のデータ
-    const self_nu = data.players[this.name]; // 自身のデータ
-    const cards = self_nu?.round.cards ?? [];
-    const changeCards = this.getChangeCards(cards);
-    if (
-      data.minBetPoint >= data.initialPoint / 2 &&
-      changeCards.every((card) => !card.isHold)
-    ) {
-      if (Math.random() < 0.95) {
-        return -1;
-      }
-    }
+    // const self_nu = data.players[this.name]; // 自身のデータ
+    // const cards = self_nu?.round.cards ?? [];
+    // const changeCards = this.getChangeCards(cards);
+    // if (
+    //   data.minBetPoint >= data.initialPoint / 2 &&
+    //   changeCards.every((card) => !card.isHold)
+    // ) {
+    //   if (Math.random() < 0.95) {
+    //     return -1;
+    //   }
+    // }
     //ここにフォール度条件の追加を記述すべし
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
@@ -244,6 +244,9 @@ class TsPlayer {
     const changeCards = [];
     for (let card of cards) {
       if (!card.isHold) changeCards.push(card);
+    }
+    for (let card of cards) {
+      card.isHold = false;
     }
     return changeCards;
   }
