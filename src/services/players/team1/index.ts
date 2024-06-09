@@ -144,7 +144,17 @@ class TsPlayer {
     //   } else if (data.phase === "bet-2") {
     //     // 2回目のベットフェーズ
     //     // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
-    //     if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
+    //     //if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
+    //     if (canbet) {
+    //       if (this.name.HAND_RANK === 'High Card') {
+    //           return -1;
+    //       } else if (this.name.HAND_RANK === 'One Pair') {
+    //           return this.betUnit;
+    //       } else if (this.name.HAND_RANK === 'Two Pair') {
+    //           return this.betUnit * 2;
+    //       } else {
+    //           return this.betUnit * 3;
+    //       } 
     //   }
     // }
     // //元からある部分
