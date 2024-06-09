@@ -98,11 +98,15 @@ class TsPlayer {
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
     //const self = data.players[this.name]; // 自身のデータ
-    const cards = self?.round.cards ?? [];
+    const self_nu = data.players[this.name]; // 自身のデータ
+    const cards = self_nu?.round.cards ?? [];
     const changeCards = this.getChangeCards(cards);
-    if (data.minBetPoint >= data.initialPoint / 2 && changeCards.every(card => !card.isHold)) {
+    if (
+      data.minBetPoint >= data.initialPoint / 2 &&
+      changeCards.every((card) => !card.isHold)
+    ) {
       if (Math.random() < 0.95) {
-          return -1;
+        return -1;
       }
     }
     //ここにフォール度条件の追加を記述すべし
@@ -136,7 +140,6 @@ class TsPlayer {
     //           return this.betUnit * 3;
     //       }
     //   }
-      
 
     //   } else if (data.phase === "bet-2") {
     //     // 2回目のベットフェーズ
@@ -151,7 +154,6 @@ class TsPlayer {
         // 1回目のベットフェーズ
         // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
         if (!data.minBetPoint) return this.betUnit;
-
       } else if (data.phase === "bet-2") {
         // 2回目のベットフェーズ
         // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
@@ -234,7 +236,8 @@ class TsPlayer {
           cards[i + 2].isHold = true;
           cards[i + 3].isHold = true;
         }
-      } isHold = true;
+      }
+      isHold = true;
     }
 
     // ホールドしなかったカードが交換対象
