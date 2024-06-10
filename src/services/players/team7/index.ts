@@ -72,6 +72,7 @@ class TsPlayer {
     this.betUnit = randomByNumber(300) + 200; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
+
   /**
    * 場の最低賭けポイントに対して追加で賭けるポイントを決定する
    * @param data
@@ -84,7 +85,7 @@ class TsPlayer {
       )
     );
 
-    // 各プレイヤーの情報をログに出力する 
+    // 各プレイヤーの情報をログに出力する
     Object.values(data.players).forEach((player) => {
       this.logger?.debug(
         this.formattedLog(
@@ -93,6 +94,22 @@ class TsPlayer {
       );
     });
 
+    // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
+    //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
+    //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
+    //const self = data.players[this.name]; // 自身のデータ
+    // const self_nu = data.players[this.name]; // 自身のデータ
+    // const cards = self_nu?.round.cards ?? [];
+    // const changeCards = this.getChangeCards(cards);
+    // if (
+    //   data.minBetPoint >= data.initialPoint / 2 &&
+    //   changeCards.every((card) => !card.isHold)
+    // ) {
+    //   if (Math.random() < 0.95) {
+    //     return -1;
+    //   }
+    // }
+    //ここにフォール度条件の追加を記述すべし
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
     this.logger?.info(
@@ -158,7 +175,7 @@ class TsPlayer {
     const declareAllIn = randomByNumber(1000) < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
     return declareAllIn ? stack : 0; // オール・インまたはコール
   }
-      
+
   /**
    * 交換する手札を選択する
    * @param data
@@ -167,8 +184,6 @@ class TsPlayer {
   private drawCard(data: GameInfo): boolean[] {
     const self = data.players[this.name]; // 自身のデータ
     const cards = self?.round.cards ?? [];
-    // let isHold: boolean = false; // 明示的な型指定
-
     this.logger?.info(
       this.formattedLog(
         `phase: ${data.phase}. my cards: ${JSON.stringify(cards)}`
