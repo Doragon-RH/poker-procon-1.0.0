@@ -98,17 +98,7 @@ class TsPlayer {
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
     //const self = data.players[this.name]; // 自身のデータ
-    // const self_nu = data.players[this.name]; // 自身のデータ
-    // const cards = self_nu?.round.cards ?? [];
-    // const changeCards = this.getChangeCards(cards);
-    // if (
-    //   data.minBetPoint >= data.initialPoint / 2 &&
-    //   changeCards.every((card) => !card.isHold)
-    // ) {
-    //   if (Math.random() < 0.95) {
-    //     return -1;
-    //   }
-    // }
+
     //ここにフォール度条件の追加を記述すべし
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
@@ -154,9 +144,25 @@ class TsPlayer {
     //           return this.betUnit * 2;
     //       } else {
     //           return this.betUnit * 3;
-    //       } 
+    //       }
     //   }
     // }
+    const self_nu = data.players[this.name]; // 自身のデータ
+    const cards = self_nu?.round.cards ?? [];
+    const changeCards = this.getChangeCards(cards);
+    if (data.phase === "bet-2") {
+      if (
+        changeCards[0] != null &&
+        changeCards[1] != null &&
+        changeCards[2] != null &&
+        changeCards[3] != null &&
+        changeCards[4] != null
+      ) {
+        if (Math.random() < 0.95) {
+          return -1;
+        }
+      }
+    }
     // //元からある部分
     if (canRaise) {
       // レイズが宣言できる場合
@@ -177,7 +183,7 @@ class TsPlayer {
   }
 
   /**
-   * 交換する手札を選択する
+   * 交換する手札を選択する(連番・スートが同じ役を狙いに行く)
    * @param data
    * @returns
    */
@@ -202,12 +208,10 @@ class TsPlayer {
 
   private getChangeCards(cards) {
     let isHold = false;
-
+    let sequenceCount = 0;
     // 同じ数字があればホールド
     let beforeCard = null;
     for (let card of cards) {
-      if (card.isHold) continue;
-
       if (beforeCard != null && card.number == beforeCard.number) {
         card.isHold = true;
         beforeCard.isHold = true;
@@ -215,36 +219,41 @@ class TsPlayer {
       }
       beforeCard = card;
     }
+    // 連番が4つ以上あればホールド
+    if (!isHold) {
+      for (let i = 0; i < 3; i++) {
+        if (
+          cards[i].number + 1 == cards[i + 1].number &&
+          cards[i].number + 2 == cards[i + 2].number
+        ) {
+          cards[i].isHold = true;
+          cards[i + 1].isHold = true;
+          cards[i + 2].isHold = true;
+          sequenceCount++;
+        }
+      }
+      // 連番が3つなら低確率で、4つ以上なら確定でホールド
+      if (sequenceCount == 1 && Math.random() < 0.1) {
+        isHold = true;
+      } else if (sequenceCount >= 2) {
+        isHold = true;
+      } else {
+        for (let card of cards) card.isHold = false;
+      }
+    }
 
-    // 同じスートが4つ以上あればホールド
+    // 同じスートが3つなら低確率で、4つ以上なら確定でホールド
     if (!isHold) {
       let suit = null;
       const suitCount = {};
       for (let card of cards) {
         if (suitCount[card.suit] == null) suitCount[card.suit] = 0;
         suitCount[card.suit]++;
-        if (suitCount[card.suit] >= 4) suit = card.suit;
+        if (suitCount[card.suit] >= 3) suit = card.suit;
       }
-      if (suit != null) {
+      if (suit != null && (suitCount[suit] >= 4 || Math.random() < 0.1)) {
         for (let card of cards) {
           if (card.suit == suit) card.isHold = true;
-        }
-        isHold = true;
-      }
-    }
-
-    // 連番が4つ以上あればホールド
-    if (!isHold) {
-      for (let i = 0; i < 2; i++) {
-        if (
-          cards[i].number + 1 == cards[i + 1].number &&
-          cards[i].number + 2 == cards[i + 2].number &&
-          cards[i].number + 3 == cards[i + 3].number
-        ) {
-          cards[i].isHold = true;
-          cards[i + 1].isHold = true;
-          cards[i + 2].isHold = true;
-          cards[i + 3].isHold = true;
         }
       }
       isHold = true;
