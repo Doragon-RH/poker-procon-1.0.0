@@ -1,5 +1,4 @@
 import type winston from 'winston';
-
 import { DATA_FILE_PATH } from '@/constants';
 import { CARDS, HAND_RANK, HAND_SIZE } from '@/constants/game';
 import { getLogger } from '@/libs/logger';

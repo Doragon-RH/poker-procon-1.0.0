@@ -134,6 +134,7 @@ class JsPlayer {
       randomByNumber(2) < 1,
     ];
   }
+  
 
   /**
    * ラウンド終了時に行う処理
