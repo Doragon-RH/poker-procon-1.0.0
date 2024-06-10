@@ -93,6 +93,28 @@ class TsPlayer {
       );
     });
 
+<<<<<<< HEAD
+    // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
+    //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
+    //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
+    // const self = data.players[this.name]; // 自身のデータ
+    const self_nu = data.players[this.name]; // 自身のデータ
+    const cards = self_nu?.round.cards ?? [];
+    const changeCards = this.getChangeCards(cards);
+    if (
+      changeCards[0] == false &&
+      changeCards[1] == false &&
+      changeCards[2] == false &&
+      changeCards[3] == false &&
+      changeCards[4] == false
+    ) {
+      if (Math.random() < 0.95) {
+        return -1;
+      }
+    }
+    //ここにフォール度条件の追加を記述すべし
+=======
+>>>>>>> ba44486f8325538207dc4929b8abdf3c3d7b1810
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
     this.logger?.info(
@@ -137,7 +159,7 @@ class TsPlayer {
     //           return this.betUnit * 2;
     //       } else {
     //           return this.betUnit * 3;
-    //       } 
+    //       }
     //   }
     // }
     // //元からある部分
