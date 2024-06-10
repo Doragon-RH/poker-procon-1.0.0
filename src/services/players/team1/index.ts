@@ -97,18 +97,19 @@ class TsPlayer {
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
-    //const self = data.players[this.name]; // 自身のデータ
-    // const self_nu = data.players[this.name]; // 自身のデータ
-    // const cards = self_nu?.round.cards ?? [];
-    // const changeCards = this.getChangeCards(cards);
-    // if (
-    //   data.minBetPoint >= data.initialPoint / 2 &&
-    //   changeCards.every((card) => !card.isHold)
-    // ) {
-    //   if (Math.random() < 0.95) {
-    //     return -1;
-    //   }
-    // }
+    // const self = data.players[this.name]; // 自身のデータ
+    const self_nu = data.players[this.name]; // 自身のデータ
+    const cards = self_nu?.round.cards ?? [];
+    const changeCards = this.getChangeCards(cards);
+    const isHoldValues = cards.map(card => card.isHold);
+    if (
+      changeCards.every((card) => card === false) &&
+       data.minBetPoint >= data.initialPoint / 30 
+    ) {
+      if (Math.random() < 0.95) {
+        return -1;
+      }
+    }
     //ここにフォール度条件の追加を記述すべし
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
@@ -117,7 +118,11 @@ class TsPlayer {
         `my cards: ${JSON.stringify(self?.round.cards)}, diff: ${diff}`
       )
     );
-
+    this.logger?.info(
+      this.formattedLog(
+        `my cards_oriro: ${JSON.stringify(isHoldValues)}, diff: ${diff}`
+      )
+    );
     const point = self?.point ?? 0; // 所持ポイント
     const stack = point - diff; // 自由に使用できるポイント
     const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる
@@ -201,7 +206,8 @@ class TsPlayer {
   }
 
   private getChangeCards(cards) {
-    let isHold = false;
+    //let isHold = false;
+    let isHold: boolean = false;
 
     // 同じ数字があればホールド
     let beforeCard = null;
