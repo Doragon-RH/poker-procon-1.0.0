@@ -31,6 +31,7 @@ class TsPlayer {
 
   constructor(id: string, name: string) {
     this.logger = getLogger({ group: "player", gameId: id, playerName: name });
+
     this.id = id;
     this.name = name;
     this.round = 0;
@@ -110,6 +111,7 @@ class TsPlayer {
     //   }
     // }
     //ここにフォール度条件の追加を記述すべし
+
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
     this.logger?.info(
@@ -165,6 +167,7 @@ class TsPlayer {
         // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
         if (!data.minBetPoint) return this.betUnit;
       } else if (data.phase === "bet-2") {
+
         // 2回目のベットフェーズ
         // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
         if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
