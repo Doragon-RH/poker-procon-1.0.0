@@ -68,7 +68,6 @@ class TsPlayer {
         )
       );
     });
-
     this.betUnit = randomByNumber(300) + 200; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
@@ -93,7 +92,6 @@ class TsPlayer {
       );
     });
 
-<<<<<<< HEAD
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
@@ -113,8 +111,6 @@ class TsPlayer {
       }
     }
     //ここにフォール度条件の追加を記述すべし
-=======
->>>>>>> ba44486f8325538207dc4929b8abdf3c3d7b1810
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
     this.logger?.info(
@@ -122,7 +118,6 @@ class TsPlayer {
         `my cards: ${JSON.stringify(self?.round.cards)}, diff: ${diff}`
       )
     );
-
     const point = self?.point ?? 0; // 所持ポイント
     const stack = point - diff; // 自由に使用できるポイント
     const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる

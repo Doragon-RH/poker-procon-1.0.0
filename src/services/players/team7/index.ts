@@ -93,7 +93,6 @@ class TsPlayer {
         )
       );
     });
-
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
@@ -107,7 +106,11 @@ class TsPlayer {
         `my cards: ${JSON.stringify(self?.round.cards)}, diff: ${diff}`
       )
     );
-
+    this.logger?.info(
+      this.formattedLog(
+        `my cards_rankkakunin: ${JSON.stringify(self?.round.cards)}, diff: ${diff}`
+      )
+    );
     const point = self?.point ?? 0; // 所持ポイント
     const stack = point - diff; // 自由に使用できるポイント
     const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる
