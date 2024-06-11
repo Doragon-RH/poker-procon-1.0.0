@@ -2,6 +2,41 @@ import type winston from "winston";
 import { getLogger } from "@/libs/logger";
 import { GameInfo, Hand } from "@/schema/game";
 import { randomByNumber } from "@/utils/game";
+// export const HAND_RANK: { [key in Hand]: string } = {
+//   [Hand.Drop]: 'Drop',
+//   [Hand.HighCard]: 'High Card',
+//   [Hand.OnePair]: 'One Pair',
+//   [Hand.TwoPair]: 'Two Pair',
+//   [Hand.ThreeOfAKind]: 'Three of a Kind',
+//   [Hand.Straight]: 'Straight',
+//   [Hand.Flush]: 'Flush',
+//   [Hand.FullHouse]: 'Full House',
+//   [Hand.FourOfAKind]: 'Four of a Kind',
+//   [Hand.StraightFlush]: 'Straight Flush',
+//   [Hand.RoyalStraightFlush]: 'Royal Straight Flush',
+// };
+// //クラス途中経過のhandの解析を進める
+// private onePhase(round: Round) {
+//   // 全プレイヤーの役をチェック
+//   const result_one: {
+//     [key: string]: {
+//       cards: CardSet<Card>;
+//       hand: string;
+//     };
+//   } = {};
+
+//   for (let i = 0; i < round.order.length; i += 1) {
+//     const name = round.order[i];
+//     if (!name || !this.game.players[name] || !this.game.players[name].round)
+//       return;
+
+//     const handRank = evaluateHand(this.game.players[name].round.cards);
+//     this.game.players[name].round.hand = handRank;
+//     result_one[name] = {
+//       cards: this.game.players[name].round.cards,
+//       hand: HAND_RANK[handRank] ?? 'Drop',
+//     };
+//   }
 class TsPlayer {
   private logger: winston.Logger | null | undefined; // player logger
 
