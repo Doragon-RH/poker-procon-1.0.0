@@ -104,7 +104,8 @@ class TsPlayer {
     const isHoldValues = cards.map(card => card.isHold);
     if (
       changeCards.every((card) => card === false) &&
-       data.minBetPoint >= data.initialPoint / 30 
+      //isHoldValues.every(value => value === false) &&
+      data.minBetPoint >= data.initialPoint / 30 
     ) {
       if (Math.random() < 0.95) {
         return -1;
