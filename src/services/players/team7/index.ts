@@ -4,7 +4,7 @@ import { Game, GameInfo, Hand } from "@/schema/game";
 import { randomByNumber } from "@/utils/game";
 import { Card, CardSet } from "@/schema/card";
 import { convertRankCard, evaluateHand } from '@/utils/hand';  //強さの評価基準
-
+import { HAND_RANK } from "@/constants/game";
 class TsPlayer {
   private logger: winston.Logger | null | undefined; // player logger
 
@@ -172,7 +172,7 @@ class TsPlayer {
         
         result_one[self?.name] = {
           cards: mycards,
-          //hand: HAND_RANK[handRank] ?? 'Drop',
+          hand: HAND_RANK[handRank] ?? 'Drop',
         };
         // for (let i = 0; i < this.round.order.length; i += 1) {
         //   const name = this.round.order[i];
