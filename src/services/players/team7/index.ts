@@ -162,7 +162,7 @@ class TsPlayer {
         const result_one: {
           [key: string]: {
           cards: CardSet<Card> ;
-          //hand: string;
+          hand: string;
           };
         }  = {};
         const mycards = self?.round.cards; // 自身のカード
@@ -179,6 +179,23 @@ class TsPlayer {
         if (!data.minBetPoint) return this.betUnit;
       } else if (data.phase === "bet-2") {
         // 2回目のベットフェーズ
+        const result_two: {
+          [key: string]: {
+          cards: CardSet<Card> ;
+          hand: string;
+          };
+        }  = {};
+        const mycards = self?.round.cards; // 自身のカード
+        const handRank = evaluateHand(mycards); // 自身の役        
+        result_two[self?.name] = {
+          cards: mycards,
+          hand: HAND_RANK[handRank] ?? 'Drop',
+        };
+        this.logger?.info(
+          this.formattedLog(
+            `my cards_rankkakunin22: ${JSON.stringify(result_two)}, diff: ${diff}`
+          )
+        );
         // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
         if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
       }
