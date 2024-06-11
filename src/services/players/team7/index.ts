@@ -166,25 +166,11 @@ class TsPlayer {
           };
         }  = {};
         const mycards = self?.round.cards; // 自身のカード
-        const handRank = evaluateHand(mycards);
-        //self.game.self.round.hand = handRank; // インスタンス自体の game プロパティを参照しているか確認が必要
-        //this.game.self.round.hand = handRank;
-        
+        const handRank = evaluateHand(mycards); // 自身の役        
         result_one[self?.name] = {
           cards: mycards,
           hand: HAND_RANK[handRank] ?? 'Drop',
         };
-        // for (let i = 0; i < this.round.order.length; i += 1) {
-        //   const name = this.round.order[i];
-        //   if (!name || !this.game.players[name] || !this.game.players[name].round)
-        //     return;  プレイヤー全てにやっているのでどうでもいい
-  
-        //   this.game.players[name].round.hand = handRank;
-        //   result_one[name] = {
-        //     cards: this.game.players[name].round.cards,
-        //     hand: HAND_RANK[handRank] ?? 'Drop',
-        // };
-        // }
         this.logger?.info(
           this.formattedLog(
             `my cards_rankkakunin: ${JSON.stringify(result_one)}, diff: ${diff}`
@@ -200,7 +186,7 @@ class TsPlayer {
     
 
     // レイズが宣言できない時 チェック/コール or オール・イン
-    const declareAllIn = randomByNumber(1000) < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
+    const declareAllIn = 2 < 1; // オール・インを宣言させない
     return declareAllIn ? stack : 0; // オール・インまたはコール
   }
 
