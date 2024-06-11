@@ -1,42 +1,10 @@
 import type winston from "winston";
 import { getLogger } from "@/libs/logger";
-import { GameInfo, Hand } from "@/schema/game";
+import { Game, GameInfo, Hand } from "@/schema/game";
 import { randomByNumber } from "@/utils/game";
-// export const HAND_RANK: { [key in Hand]: string } = {
-//   [Hand.Drop]: 'Drop',
-//   [Hand.HighCard]: 'High Card',
-//   [Hand.OnePair]: 'One Pair',
-//   [Hand.TwoPair]: 'Two Pair',
-//   [Hand.ThreeOfAKind]: 'Three of a Kind',
-//   [Hand.Straight]: 'Straight',
-//   [Hand.Flush]: 'Flush',
-//   [Hand.FullHouse]: 'Full House',
-//   [Hand.FourOfAKind]: 'Four of a Kind',
-//   [Hand.StraightFlush]: 'Straight Flush',
-//   [Hand.RoyalStraightFlush]: 'Royal Straight Flush',
-// };
-// //クラス途中経過のhandの解析を進める
-// private onePhase(round: Round) {
-//   // 全プレイヤーの役をチェック
-//   const result_one: {
-//     [key: string]: {
-//       cards: CardSet<Card>;
-//       hand: string;
-//     };
-//   } = {};
+import { Card, CardSet } from "@/schema/card";
+import { convertRankCard, evaluateHand } from '@/utils/hand';  //強さの評価基準
 
-//   for (let i = 0; i < round.order.length; i += 1) {
-//     const name = round.order[i];
-//     if (!name || !this.game.players[name] || !this.game.players[name].round)
-//       return;
-
-//     const handRank = evaluateHand(this.game.players[name].round.cards);
-//     this.game.players[name].round.hand = handRank;
-//     result_one[name] = {
-//       cards: this.game.players[name].round.cards,
-//       hand: HAND_RANK[handRank] ?? 'Drop',
-//     };
-//   }
 class TsPlayer {
   private logger: winston.Logger | null | undefined; // player logger
 
@@ -49,6 +17,8 @@ class TsPlayer {
   private betUnit: number; // 賭けポイントを追加する単位
 
   private win: number; // 勝数
+  
+  private game: Game;
 
   constructor(id: string, name: string) {
     this.logger = getLogger({ group: "player", gameId: id, playerName: name });
@@ -127,11 +97,6 @@ class TsPlayer {
         `my cards: ${JSON.stringify(self?.round.cards)}, diff: ${diff}`
       )
     );
-    this.logger?.info(
-      this.formattedLog(
-        `my cards_rankkakunin: ${JSON.stringify(self.HAND_RANK)}, diff: ${diff}`
-      )
-    );
     const point = self?.point ?? 0; // 所持ポイント
     const stack = point - diff; // 自由に使用できるポイント
     const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる
@@ -193,6 +158,38 @@ class TsPlayer {
       if (data.phase === "bet-1") {
         // 1回目のベットフェーズ
         // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
+      // //  自分の役をチェック
+        const result_one: {
+          [key: string]: {
+          cards: CardSet<Card> ;
+          //hand: string;
+          };
+        }  = {};
+        const mycards = self?.round.cards; // 自身のカード
+        const handRank = evaluateHand(mycards);
+        //self.game.self.round.hand = handRank; // インスタンス自体の game プロパティを参照しているか確認が必要
+        //this.game.self.round.hand = handRank;
+        
+        result_one[self?.name] = {
+          cards: mycards,
+          //hand: HAND_RANK[handRank] ?? 'Drop',
+        };
+        // for (let i = 0; i < this.round.order.length; i += 1) {
+        //   const name = this.round.order[i];
+        //   if (!name || !this.game.players[name] || !this.game.players[name].round)
+        //     return;  プレイヤー全てにやっているのでどうでもいい
+  
+        //   this.game.players[name].round.hand = handRank;
+        //   result_one[name] = {
+        //     cards: this.game.players[name].round.cards,
+        //     hand: HAND_RANK[handRank] ?? 'Drop',
+        // };
+        // }
+        this.logger?.info(
+          this.formattedLog(
+            `my cards_rankkakunin: ${JSON.stringify(result_one)}, diff: ${diff}`
+          )
+        );
         if (!data.minBetPoint) return this.betUnit;
       } else if (data.phase === "bet-2") {
         // 2回目のベットフェーズ
@@ -200,6 +197,7 @@ class TsPlayer {
         if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
       }
     }
+    
 
     // レイズが宣言できない時 チェック/コール or オール・イン
     const declareAllIn = randomByNumber(1000) < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
