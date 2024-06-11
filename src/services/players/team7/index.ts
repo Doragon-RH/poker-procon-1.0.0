@@ -2,20 +2,6 @@ import type winston from "winston";
 import { getLogger } from "@/libs/logger";
 import { GameInfo, Hand } from "@/schema/game";
 import { randomByNumber } from "@/utils/game";
-// export const HAND_RANK: { [key in Hand]: string } = {
-//   [Hand.Drop]: 'Drop',
-//   [Hand.HighCard]: 'High Card',
-//   [Hand.OnePair]: 'One Pair',
-//   [Hand.TwoPair]: 'Two Pair',
-//   [Hand.ThreeOfAKind]: 'Three of a Kind',
-//   [Hand.Straight]: 'Straight',
-//   [Hand.Flush]: 'Flush',
-//   [Hand.FullHouse]: 'Full House',
-//   [Hand.FourOfAKind]: 'Four of a Kind',
-//   [Hand.StraightFlush]: 'Straight Flush',
-//   [Hand.RoyalStraightFlush]: 'Royal Straight Flush',
-// };
-// //これでいいのか要確認
 class TsPlayer {
   private logger: winston.Logger | null | undefined; // player logger
 
@@ -108,7 +94,7 @@ class TsPlayer {
     );
     this.logger?.info(
       this.formattedLog(
-        `my cards_rankkakunin: ${JSON.stringify(self?.round.cards)}, diff: ${diff}`
+        `my cards_rankkakunin: ${JSON.stringify(self.HAND_RANK)}, diff: ${diff}`
       )
     );
     const point = self?.point ?? 0; // 所持ポイント
