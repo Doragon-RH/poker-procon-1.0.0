@@ -18,7 +18,9 @@ class TsPlayer {
 
   private win: number; // 勝数
   
-  private game: Game; //game情報
+  private game: any; //game情報
+
+
 
   constructor(id: string, name: string) {
     this.logger = getLogger({ group: "player", gameId: id, playerName: name });
@@ -60,7 +62,7 @@ class TsPlayer {
       );
     });
 
-    this.betUnit = 100; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
+    this.betUnit = 1; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
 
@@ -187,23 +189,19 @@ class TsPlayer {
         //ここは変更後
               
         if (result_two[self.name]?.hand === 'High Card') {
-          if (!data.minBetPoint){ 
-            return 0;}    // 誰も賭けていなければチェックする
-          else {
-            return -1; //かけられたらドロップ
-          }
+          if (canRaise) return -1;
+          // そうでなければcall
+          return 0;
         } else if (result_two[self.name]?.hand === 'One Pair') {
-          // 最低賭けポイントが所持ポイントの3割以上の場合はドロップする
-          if (point / 30 < data.minBetPoint) return -1;
-                return this.betUnit * 1;
+          // 所持ポイントに余裕があればコール
+          if (canRaise) return this.betUnit * 4500;
+        // そうでなければドロップ
+          return -1;
         } else if (result_two[self.name]?.hand === 'Two Pair') {
-          // 最低賭けポイントが所持ポイントの3割以上の場合はドロップする
-          if (point / 50  < data.minBetPoint) return -1;
-                return this.betUnit * 2;
+            if (canRaise) return this.betUnit * 2; return -1;
         } else {
                 return this.betUnit * 3;
         }
-  
       }
     }
     
