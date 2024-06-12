@@ -6,6 +6,7 @@ import test_2 from "./team2";
 import test_3 from "./team3";
 import test_4 from "./team4";
 import test_7 from "./team7";
+import test_8 from "./team8";
 // ↑作成したプレイヤープログラムをimportしてください。
 
 const Players: {
@@ -19,6 +20,7 @@ const Players: {
   enemy_1: test_2,
   enemy_2: test_3,
   enemy_3: test_4,
+  team8: test_8,
   // ↓作成したプレイヤープログラムを定義してください。
   // Team1, // sample
   // ↑作成したプレイヤープログラムを定義してください。
