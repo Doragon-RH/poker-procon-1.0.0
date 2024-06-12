@@ -123,7 +123,7 @@ class TsPlayer {
       if (data.phase === "bet-1") {
         // 1回目のベットフェーズ
         // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
-      // //  自分の役をチェック
+        //  自分の役をチェック
         const result_one: {
           [key: string]: {
           cards: CardSet<Card> ;
@@ -148,6 +148,8 @@ class TsPlayer {
         if (result_one[self.name]?.hand === 'High Card') {
           if (!data.minBetPoint){ 
                 return 0;}    // 誰も賭けていなければチェックする
+          // 最低賭けポイントが所持ポイントの1割以上の場合はドロップする
+          if (point / 10 < data.minBetPoint) return -1;
         } else if (result_one[self.name]?.hand === 'One Pair') {
                 return this.betUnit * 2;
         } else if (result_one[self.name]?.hand === 'Two Pair') {
