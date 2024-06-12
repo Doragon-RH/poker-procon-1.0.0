@@ -1,9 +1,9 @@
-import type winston from 'winston';
+import type winston from "winston";
 
-import { getLogger } from '@/libs/logger';
-import { GameInfo, Hand } from '@/schema/game';
-import { randomByNumber } from '@/utils/game';
-import { evaluateHand } from '@/utils/hand';
+import { getLogger } from "@/libs/logger";
+import { GameInfo, Hand } from "@/schema/game";
+import { randomByNumber } from "@/utils/game";
+import { evaluateHand } from "@/utils/hand";
 
 // export const HAND_RANK: { [key in Hand]: string } = {
 //   [Hand.Drop]: 'Drop',
@@ -33,7 +33,7 @@ class TsPlayer {
   private win: number; // 勝数
 
   constructor(id: string, name: string) {
-    this.logger = getLogger({ group: 'player', gameId: id, playerName: name });
+    this.logger = getLogger({ group: "player", gameId: id, playerName: name });
     this.id = id;
     this.name = name;
     this.round = 0;
@@ -61,7 +61,7 @@ class TsPlayer {
    */
   private startRound(data: GameInfo): void {
     this.round = data.currentRound;
-    this.logger?.info(this.formattedLog('Round start.'));
+    this.logger?.info(this.formattedLog("Round start."));
 
     // 各プレイヤーの情報をログに出力する
     Object.values(data.players).forEach((player) => {
@@ -72,7 +72,7 @@ class TsPlayer {
       );
     });
 
-    this.betUnit = 1; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
+    this.betUnit = 1; // 1ターンごとに追加するポイント数
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
 
@@ -113,7 +113,7 @@ class TsPlayer {
     );
 
     // 1回目のベットフェーズの場合
-    if (data.phase === 'bet-1') {
+    if (data.phase === "bet-1") {
       // 役なしの場合
       if (currnetHandValue <= 1) {
         // 誰も賭けていなければチェックする
@@ -128,17 +128,16 @@ class TsPlayer {
         return -1;
       } else if (canRaise) {
         // ストレート以上の場合、レイズ可能であれば手の強さに応じてレイズ幅を釣り上げてベッドする
-        return this.betUnit * 3000; currnetHandValue;
+        return this.betUnit * 3000;
+        currnetHandValue;
       }
       return 0;
     }
     // 2回目のベッドフェーズの場合
     // 役なしの場合
     if (currnetHandValue <= 1) {
-      // レイズ宣言可能な状況であればドロップ
-      if (canRaise) return -1;
-      // そうでなければオール・イン
-      return 0;
+      // ドロップ
+      return -1;
     }
     if (currnetHandValue <= 3) {
       // スリーカード以下の場合
@@ -147,15 +146,16 @@ class TsPlayer {
       // そうでなければドロップ
       return -1;
     }
-   if (currnetHandValue <= 4){
+    if (currnetHandValue <= 4) {
       // スリーカードの場合
       // 所持ポイントに余裕があれば多めにレイズ
       if (canRaise) return this.betUnit * 4500;
       // そうでなければドロップ
       return -1;
-   }
+    }
     if (canRaise) {
-      return this.betUnit * 18000; currnetHandValue;
+      return this.betUnit * 18000;
+      currnetHandValue;
     }
 
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
@@ -225,11 +225,11 @@ class TsPlayer {
     // //元からある部分
     if (canRaise) {
       // レイズが宣言できる場合
-      if (data.phase === 'bet-1') {
+      if (data.phase === "bet-1") {
         // 1回目のベットフェーズ
         // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
         if (!data.minBetPoint) return this.betUnit;
-      } else if (data.phase === 'bet-2') {
+      } else if (data.phase === "bet-2") {
         // 2回目のベットフェーズ
         // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
         if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
