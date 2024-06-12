@@ -151,6 +151,8 @@ class TsPlayer {
           // 最低賭けポイントが所持ポイントの1割以上の場合はドロップする
           if (point / 10 < data.minBetPoint) return -1;
         } else if (result_one[self.name]?.hand === 'One Pair') {
+          // 最低賭けポイントが所持ポイントの2割以上の場合はドロップする
+          if (point / 20 < data.minBetPoint) return -1;
                 return this.betUnit * 2;
         } else if (result_one[self.name]?.hand === 'Two Pair') {
                 return this.betUnit * 3;

@@ -57,7 +57,7 @@ class TsPlayer {
       );
     });
 
-    this.betUnit = randomByNumber(300) + 200; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
+    this.betUnit = 1; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
 
@@ -113,7 +113,7 @@ class TsPlayer {
         return -1;
       } else if (canRaise) {
         // ストレート以上の場合、レイズ可能であれば手の強さに応じてレイズ幅を釣り上げてベッドする
-        return this.betUnit * currnetHandValue;
+        return this.betUnit * 3000; currnetHandValue;
       }
       return 0;
     }
@@ -125,15 +125,22 @@ class TsPlayer {
       // そうでなければオール・イン
       return 0;
     }
-    if (currnetHandValue <= 4) {
+    if (currnetHandValue <= 3) {
       // スリーカード以下の場合
       // 所持ポイントに余裕があればコール
       if (canRaise) return this.betUnit;
       // そうでなければドロップ
       return -1;
     }
+   if (currnetHandValue <= 4){
+      // スリーカードの場合
+      // 所持ポイントに余裕があれば多めにレイズ
+      if (canRaise) return this.betUnit * 4500;
+      // そうでなければドロップ
+      return -1;
+   }
     if (canRaise) {
-      return this.betUnit * currnetHandValue;
+      return this.betUnit * 18000; currnetHandValue;
     }
 
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
@@ -215,7 +222,7 @@ class TsPlayer {
     }
 
     // レイズが宣言できない時 チェック/コール or オール・イン
-    const declareAllIn = randomByNumber(1000) < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
+    const declareAllIn = 2 < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
     return declareAllIn ? stack : 0; // オール・インまたはコール
   }
 
