@@ -18,7 +18,7 @@ class TsPlayer {
 
   private win: number; // 勝数
   
-  private game: Game;
+  private game: Game; //game情報
 
   constructor(id: string, name: string) {
     this.logger = getLogger({ group: "player", gameId: id, playerName: name });
@@ -100,42 +100,7 @@ class TsPlayer {
     const point = self?.point ?? 0; // 所持ポイント
     const stack = point - diff; // 自由に使用できるポイント
     const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる
-    // //追記ゾーン
     // const canbet =  stack > 0; // 自由に使用できるポイントが1以上あればベットが宣言できる
-    // if (canbet) {
-    //   // ベットが宣言できる場合
-    //   if (data.phase === "bet-1") {
-    //     // 1回目のベットフェーズ
-    //     // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
-    //     //if (!data.minBetPoint) return this.betUnit;
-    //     if (canbet) {
-    //       if (this.name.HAND_RANK === 'High Card') {
-    //           return -1;
-    //       } else if (this.name.HAND_RANK === 'One Pair') {
-    //           return this.betUnit;
-    //       } else if (this.name.HAND_RANK === 'Two Pair') {
-    //           return this.betUnit * 2;
-    //       } else {
-    //           return this.betUnit * 3;
-    //       }
-    //   }
-
-    //   } else if (data.phase === "bet-2") {
-    //     // 2回目のベットフェーズ
-    //     // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
-    //     //if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
-    //     if (canbet) {
-    //       if (this.name.HAND_RANK === 'High Card') {
-    //           return -1;
-    //       } else if (this.name.HAND_RANK === 'One Pair') {
-    //           return this.betUnit;
-    //       } else if (this.name.HAND_RANK === 'Two Pair') {
-    //           return this.betUnit * 2;
-    //       } else {
-    //           return this.betUnit * 3;
-    //       }
-    //   }
-    // }
     const self_nu = data.players[this.name]; // 自身のデータ
     const cards = self_nu?.round.cards ?? [];
     const changeCards = this.getChangeCards(cards);
