@@ -155,7 +155,9 @@ class TsPlayer {
           if (point / 20 < data.minBetPoint) return -1;
                 return this.betUnit * 2;
         } else if (result_one[self.name]?.hand === 'Two Pair') {
-                return this.betUnit * 3;
+          // 最低賭けポイントが所持ポイントの3割以上の場合はドロップする
+          if (point / 30 < data.minBetPoint) return -1;
+                return this.betUnit * 5;
         } else {
                 return this.betUnit * 4;
         }
@@ -191,8 +193,12 @@ class TsPlayer {
             return -1; //かけられたらドロップ
           }
         } else if (result_two[self.name]?.hand === 'One Pair') {
+          // 最低賭けポイントが所持ポイントの3割以上の場合はドロップする
+          if (point / 30 < data.minBetPoint) return -1;
                 return this.betUnit * 1;
         } else if (result_two[self.name]?.hand === 'Two Pair') {
+          // 最低賭けポイントが所持ポイントの3割以上の場合はドロップする
+          if (point / 50  < data.minBetPoint) return -1;
                 return this.betUnit * 2;
         } else {
                 return this.betUnit * 3;
