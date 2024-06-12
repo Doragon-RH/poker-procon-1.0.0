@@ -225,19 +225,6 @@ class TsPlayer {
     //       }
     //   }
     // }
-    // //元からある部分
-    if (canRaise) {
-      // レイズが宣言できる場合
-      if (data.phase === "bet-1") {
-        // 1回目のベットフェーズ
-        // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
-        if (!data.minBetPoint) return this.betUnit;
-      } else if (data.phase === "bet-2") {
-        // 2回目のベットフェーズ
-        // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
-        if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
-      }
-    }
 
     // レイズが宣言できない時 チェック/コール or オール・イン
     const declareAllIn = 2 < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
