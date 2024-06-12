@@ -60,7 +60,7 @@ class TsPlayer {
       );
     });
 
-    this.betUnit = randomByNumber(300) + 200; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
+    this.betUnit = 100; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
 
@@ -168,7 +168,7 @@ class TsPlayer {
         const mycards = self?.round.cards; // 自身のカード
         const handRank = evaluateHand(mycards); // 自身の役        
         result_one[self?.name] = {
-          cards: mycards,
+          //cards: mycards,
           hand: HAND_RANK[handRank] ?? 'Drop',
         };
         this.logger?.info(
@@ -188,7 +188,7 @@ class TsPlayer {
         const mycards = self?.round.cards; // 自身のカード
         const handRank = evaluateHand(mycards); // 自身の役        
         result_two[self?.name] = {
-          cards: mycards,
+          //cards: mycards,
           hand: HAND_RANK[handRank] ?? 'Drop',
         };
         this.logger?.info(
