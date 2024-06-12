@@ -16,11 +16,10 @@ const Players: {
   DemoPlayer2: TsPlayer, // 変更禁止
   DemoPlayer3: TsPlayer, // 変更禁止
   DemoPlayer4: JsPlayer, // 変更禁止
-  team7: test_7,
-  enemy_1: test_2,
-  enemy_2: test_3,
-  enemy_3: test_4,
-  team8: test_8,
+  enemy_1: test_7,
+  enemy_2: test_7,
+  team7_1: test_8,
+  team7_2: test_8,
   // ↓作成したプレイヤープログラムを定義してください。
   // Team1, // sample
   // ↑作成したプレイヤープログラムを定義してください。

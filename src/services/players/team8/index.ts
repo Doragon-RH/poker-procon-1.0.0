@@ -123,7 +123,7 @@ class TsPlayer {
       } else if (currnetHandValue <= 4) {
         // スリーカード以下の場合
         // 所持ポイントに余裕があればコール
-        if (canRaise) return this.betUnit;
+        if (canRaise) return 0;
         // そうでなければドロップ
         return -1;
       } else if (canRaise) {
@@ -142,7 +142,10 @@ class TsPlayer {
     if (currnetHandValue <= 3) {
       // スリーカード以下の場合
       // 所持ポイントに余裕があればコール
-      if (canRaise) return this.betUnit;
+      if (canRaise) {
+        if (point / 20 < data.minBetPoint) return -1;
+        return 0;
+      }
       // そうでなければドロップ
       return -1;
     }
