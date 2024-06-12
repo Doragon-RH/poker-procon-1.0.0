@@ -4,7 +4,7 @@ import TsPlayer from "./demo-player-ts"; // 変更禁止
 import test_1 from "./team1"; // sample
 import test_2 from "./team2";
 import test_3 from "./team3";
-import test_4 from "./team4";
+import test_5 from "./team5";
 import test_7 from "./team7";
 import test_8 from "./team8";
 // ↑作成したプレイヤープログラムをimportしてください。

@@ -1,9 +1,24 @@
-import type winston from 'winston';
+import type winston from "winston";
 
-import { getLogger } from '@/libs/logger';
-import type { GameInfo } from '@/schema/game';
-import { randomByNumber } from '@/utils/game';
+import { getLogger } from "@/libs/logger";
+import { GameInfo, Hand } from "@/schema/game";
+import { randomByNumber } from "@/utils/game";
+import { evaluateHand } from "@/utils/hand";
 
+// export const HAND_RANK: { [key in Hand]: string } = {
+//   [Hand.Drop]: 'Drop',
+//   [Hand.HighCard]: 'High Card',
+//   [Hand.OnePair]: 'One Pair',
+//   [Hand.TwoPair]: 'Two Pair',
+//   [Hand.ThreeOfAKind]: 'Three of a Kind',
+//   [Hand.Straight]: 'Straight',
+//   [Hand.Flush]: 'Flush',
+//   [Hand.FullHouse]: 'Full House',
+//   [Hand.FourOfAKind]: 'Four of a Kind',
+//   [Hand.StraightFlush]: 'Straight Flush',
+//   [Hand.RoyalStraightFlush]: 'Royal Straight Flush',
+// };
+// //これでいいのか要確認
 class TsPlayer {
   private logger: winston.Logger | null | undefined; // player logger
 
@@ -18,7 +33,7 @@ class TsPlayer {
   private win: number; // 勝数
 
   constructor(id: string, name: string) {
-    this.logger = getLogger({ group: 'player', gameId: id, playerName: name });
+    this.logger = getLogger({ group: "player", gameId: id, playerName: name });
     this.id = id;
     this.name = name;
     this.round = 0;
@@ -46,7 +61,7 @@ class TsPlayer {
    */
   private startRound(data: GameInfo): void {
     this.round = data.currentRound;
-    this.logger?.info(this.formattedLog('Round start.'));
+    this.logger?.info(this.formattedLog("Round start."));
 
     // 各プレイヤーの情報をログに出力する
     Object.values(data.players).forEach((player) => {
@@ -57,7 +72,7 @@ class TsPlayer {
       );
     });
 
-    this.betUnit = randomByNumber(300) + 200; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
+    this.betUnit = 1; // 1ターンごとに追加するポイント数
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
 
@@ -82,36 +97,66 @@ class TsPlayer {
       );
     });
 
-    // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
-    if (data.minBetPoint > data.initialPoint / 2) return -1;
-
+    // 現在の自分の手を評価する
     const self = data.players[this.name]; // 自身のデータ
+    const currnetHandValue = self ? evaluateHand(self.round.cards) : 0;
+
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
+    const point = self?.point ?? 0; // 所持ポイント
+    const stack = point - diff; // 自由に使用できるポイント
+    const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる
+
+    this.logger?.debug(
+      this.formattedLog(
+        `${this.name} info. point: ${self?.point}, betPoint: ${self?.round.betPoint}, currentHandValue: ${currnetHandValue}`
+      )
+    );
+
+    // 1回目のベットフェーズの場合
+    if (data.phase === "bet-1") {
+      // 役なしの場合
+      if (currnetHandValue <= 1) {
+        // 誰も賭けていなければチェックする
+        if (!data.minBetPoint) return 0;
+        // 最低賭けポイントが所持ポイントの1割以上の場合はドロップする
+        if (point / 10 < data.minBetPoint) return -1;
+      } else if (currnetHandValue <= 4) {
+        // スリーカード以下の場合
+        // 所持ポイントに余裕があればコール
+        if (data.minBetPoint < 500) return this.betUnit * 500;
+        if (data.minBetPoint < 3000) return 0;
+        // そうでなければドロップ
+        return -1;
+      } else if (currnetHandValue >= 6 && data.minBetPoint < 4000) {
+        // ストレート以上の場合、レイズ可能であれば手の強さに応じてレイズ幅を釣り上げてベッドする
+        return this.betUnit * 1000 * currnetHandValue;
+      }
+      return 0;
+    }
+    // 2回目のベッドフェーズの場合
+    if (currnetHandValue <= 3) {
+      // スリーカード以下の場合
+      return -1;
+    }
+    if (currnetHandValue <= 4) {
+      // スリーカードの場合
+      // 所持ポイントに余裕があれば多めにレイズ
+      if (data.minBetPoint < 1000) return this.betUnit * 1000;
+      if (data.minBetPoint < 4000) return 0;
+      // そうでなければドロップ
+      return -1;
+    }
+    if (canRaise) {
+      return this.betUnit * 2000 * currnetHandValue;
+    }
     this.logger?.info(
       this.formattedLog(
         `my cards: ${JSON.stringify(self?.round.cards)}, diff: ${diff}`
       )
     );
 
-    const point = self?.point ?? 0; // 所持ポイント
-    const stack = point - diff; // 自由に使用できるポイント
-    const canRaise = stack > 0; // 自由に使用できるポイントが1以上あればレイズが宣言できる
-
-    if (canRaise) {
-      // レイズが宣言できる場合
-      if (data.phase === 'bet-1') {
-        // 1回目のベットフェーズ
-        // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
-        if (!data.minBetPoint) return this.betUnit;
-      } else if (data.phase === 'bet-2') {
-        // 2回目のベットフェーズ
-        // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
-        if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
-      }
-    }
-
     // レイズが宣言できない時 チェック/コール or オール・イン
-    const declareAllIn = randomByNumber(1000) < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
+    const declareAllIn = 2 < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
     return declareAllIn ? stack : 0; // オール・インまたはコール
   }
 
@@ -128,14 +173,76 @@ class TsPlayer {
         `phase: ${data.phase}. my cards: ${JSON.stringify(cards)}`
       )
     );
+    const changeCards = this.getChangeCards(cards);
 
-    return [
-      randomByNumber(2) < 1,
-      randomByNumber(2) < 1,
-      randomByNumber(2) < 1,
-      randomByNumber(2) < 1,
-      randomByNumber(2) < 1,
-    ];
+    // 交換するカードのインデックスを取得
+    const changeIndexes = cards
+      .map((card, index) => (changeCards.includes(card) ? index : -1))
+      .filter((index) => index !== -1);
+
+    // 交換するカードの位置をtrue、それ以外をfalseに設定
+    return cards.map((_, index) => changeIndexes.includes(index));
+  }
+
+  private getChangeCards(cards) {
+    let isHold = false;
+
+    // 同じ数字があればホールド
+    let beforeCard = null;
+    for (let card of cards) {
+      if (card.isHold) continue;
+
+      if (beforeCard != null && card.number == beforeCard.number) {
+        card.isHold = true;
+        beforeCard.isHold = true;
+        isHold = true;
+      }
+      beforeCard = card;
+    }
+
+    // 同じスートが4つ以上あればホールド
+    if (!isHold) {
+      let suit = null;
+      const suitCount = {};
+      for (let card of cards) {
+        if (suitCount[card.suit] == null) suitCount[card.suit] = 0;
+        suitCount[card.suit]++;
+        if (suitCount[card.suit] >= 4) suit = card.suit;
+      }
+      if (suit != null) {
+        for (let card of cards) {
+          if (card.suit == suit) card.isHold = true;
+        }
+        isHold = true;
+      }
+    }
+
+    // 連番が4つ以上あればホールド
+    if (!isHold) {
+      for (let i = 0; i < 2; i++) {
+        if (
+          cards[i].number + 1 == cards[i + 1].number &&
+          cards[i].number + 2 == cards[i + 2].number &&
+          cards[i].number + 3 == cards[i + 3].number
+        ) {
+          cards[i].isHold = true;
+          cards[i + 1].isHold = true;
+          cards[i + 2].isHold = true;
+          cards[i + 3].isHold = true;
+        }
+      }
+      isHold = true;
+    }
+
+    // ホールドしなかったカードが交換対象
+    const changeCards = [];
+    for (let card of cards) {
+      if (!card.isHold) changeCards.push(card);
+    }
+    for (let card of cards) {
+      card.isHold = false;
+    }
+    return changeCards;
   }
 
   /**
