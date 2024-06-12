@@ -178,7 +178,7 @@ class TsPlayer {
     }
 
     // レイズが宣言できない時 チェック/コール or オール・イン
-    const declareAllIn = randomByNumber(1000) < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
+    const declareAllIn = false; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
     return declareAllIn ? stack : 0; // オール・インまたはコール
   }
 
