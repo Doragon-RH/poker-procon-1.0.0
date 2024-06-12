@@ -62,7 +62,7 @@ class TsPlayer {
       );
     });
 
-    this.betUnit = 1; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
+    this.betUnit = 100; // 1ターンごとに追加するポイント数（このプログラムでは1ターンごとに追加するポイント数を規定しておく。値は200〜500までの間のランダム値）
     this.logger?.debug(this.formattedLog(`bet unit: ${this.betUnit}.`));
   }
 
@@ -82,10 +82,33 @@ class TsPlayer {
     Object.values(data.players).forEach((player) => {
       this.logger?.debug(
         this.formattedLog(
-          `${player.name} info. point: ${player.point}, betPoint: ${player.round.betPoint}`
+          `${player.name} info. point: ${player.point}, betPointaaaaaaaaaaaaaaaaaaaaaaa: ${player.round.betPoint}`
         )
       );
     });
+    // // 各プレイヤーの情報を格納する配列
+    // const playersInfo = [];
+
+    // // 各プレイヤーの情報をログに出力し、配列に追加する
+    // Object.values(data.players).forEach((player) => {
+    //   const playerInfo = {
+    //     name: player.name,
+    //     point: player.point,
+    //     betPoint: player.round.betPoint
+    //   };
+    //   // 配列に追加
+    //   playersInfo.push(playerInfo);
+    //   this.logger?.debug(
+    //     this.formattedLog(
+    //       `${playerInfo.name} info. point: ${playerInfo.point}, betPoint: ${playerInfo.betPoint}`
+    //     )
+    //   );
+  
+
+    // });
+
+    // // playersInfo配列に全てのプレイヤーの情報が格納されている
+    // console.log(playersInfo);
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
@@ -194,11 +217,11 @@ class TsPlayer {
           return 0;
         } else if (result_two[self.name]?.hand === 'One Pair') {
           // 所持ポイントに余裕があればコール
-          if (canRaise) return this.betUnit * 4500;
+          if (canRaise) return this.betUnit * 2; return -1;
         // そうでなければドロップ
           return -1;
         } else if (result_two[self.name]?.hand === 'Two Pair') {
-            if (canRaise) return this.betUnit * 2; return -1;
+            if (canRaise) return this.betUnit * 4; return -1;
         } else {
                 return this.betUnit * 3;
         }
