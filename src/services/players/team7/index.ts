@@ -86,29 +86,47 @@ class TsPlayer {
         )
       );
     });
-    // // 各プレイヤーの情報を格納する配列
-    // const playersInfo = [];
+    // 各プレイヤーの情報を格納する配列
+    const playersInfo: { name: string; point: number; betPoint: number;   }[] = [];
 
-    // // 各プレイヤーの情報をログに出力し、配列に追加する
-    // Object.values(data.players).forEach((player) => {
-    //   const playerInfo = {
-    //     name: player.name,
-    //     point: player.point,
-    //     betPoint: player.round.betPoint
-    //   };
-    //   // 配列に追加
-    //   playersInfo.push(playerInfo);
-    //   this.logger?.debug(
-    //     this.formattedLog(
-    //       `${playerInfo.name} info. point: ${playerInfo.point}, betPoint: ${playerInfo.betPoint}`
-    //     )
-    //   );
-  
-
-    // });
-
-    // // playersInfo配列に全てのプレイヤーの情報が格納されている
-    // console.log(playersInfo);
+    // 各プレイヤーの情報をログに出力し、配列に追加する
+    Object.values(data.players).forEach((player) => {
+      const playerInfo = {
+        name: player.name,
+        point: player.point,
+        betPoint: player.round.betPoint
+      };
+      // 配列に追加
+      playersInfo.push(playerInfo);
+      // playerInfoをログに出力
+      this.logger?.debug(
+        this.formattedLog(
+          `Player bbbbbbbbbbbinfo: ${JSON.stringify(playerInfo)}`
+        )
+      );
+  });
+  // pointが一番小さいプレイヤーを見つける
+// pointが0のプレイヤーを除外し、残りのプレイヤーの中でpointが一番小さいプレイヤーを見つける
+  const minPointPlayer = playersInfo
+  .filter(player => player.point > 0) // pointが0のプレイヤーを除外
+  .reduce((minPlayer, currentPlayer) => {
+    return (currentPlayer.point < minPlayer.point) ? currentPlayer : minPlayer;
+  }, playersInfo[0]);
+        // playerInfoをログに出力
+  this.logger?.debug(
+    this.formattedLog(
+      `Player 小さい: ${JSON.stringify(minPointPlayer)}`
+    )
+  );
+  // pointをnumber型として使用する
+  const smallestPoint: number = minPointPlayer.point;
+  this.logger?.debug(
+    this.formattedLog(
+      `Player 小さい数字: ${JSON.stringify(smallestPoint)}`
+    )
+  );
+  //const point = self?.point ?? 0; // 所持ポイント
+  //const stack = point - diff; // 自由に使用できるポイント
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
