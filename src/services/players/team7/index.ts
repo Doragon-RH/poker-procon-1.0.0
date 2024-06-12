@@ -176,7 +176,20 @@ class TsPlayer {
             `my cards_rankkakunin: ${JSON.stringify(result_one)}, diff: ${diff}`
           )
         );
-        if (!data.minBetPoint) return this.betUnit;
+
+        //ここは変更前
+        //if (!data.minBetPoint) return this.betUnit;
+        //ここは変更後
+        if (result_one[self.name]?.hand === 'High Card') {
+                return this.betUnit * 1;
+        } else if (result_one[self.name]?.hand === 'One Pair') {
+                return this.betUnit * 2;
+        } else if (result_one[self.name]?.hand === 'Two Pair') {
+                return this.betUnit * 3;
+        } else {
+                return this.betUnit * 4;
+        }
+
       } else if (data.phase === "bet-2") {
         // 2回目のベットフェーズ
         const result_two: {
@@ -197,7 +210,20 @@ class TsPlayer {
           )
         );
         // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
-        if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
+        //ここは変更前
+        //if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）
+        //ここは変更後
+              
+        if (result_two[self.name]?.hand === 'High Card') {
+                return -1;
+        } else if (result_two[self.name]?.hand === 'One Pair') {
+                return this.betUnit * 1;
+        } else if (result_two[self.name]?.hand === 'Two Pair') {
+                return this.betUnit * 2;
+        } else {
+                return this.betUnit * 3;
+        }
+  
       }
     }
     
