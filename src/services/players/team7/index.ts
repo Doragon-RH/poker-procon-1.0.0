@@ -146,7 +146,8 @@ class TsPlayer {
         //if (!data.minBetPoint) return this.betUnit;
         //ここは変更後
         if (result_one[self.name]?.hand === 'High Card') {
-                return this.betUnit * 1;
+          if (!data.minBetPoint){ 
+                return 0;}    // 誰も賭けていなければチェックする
         } else if (result_one[self.name]?.hand === 'One Pair') {
                 return this.betUnit * 2;
         } else if (result_one[self.name]?.hand === 'Two Pair') {
@@ -180,7 +181,11 @@ class TsPlayer {
         //ここは変更後
               
         if (result_two[self.name]?.hand === 'High Card') {
-                return -1;
+          if (!data.minBetPoint){ 
+            return 0;}    // 誰も賭けていなければチェックする
+          else {
+            return -1; //かけられたらドロップ
+          }
         } else if (result_two[self.name]?.hand === 'One Pair') {
                 return this.betUnit * 1;
         } else if (result_two[self.name]?.hand === 'Two Pair') {
