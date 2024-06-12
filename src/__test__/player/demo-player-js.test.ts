@@ -1,53 +1,53 @@
-import type { Card, CardSet } from '@/schema/card';
-import type { GameInfo } from '@/schema/game';
-import Players from '@/services/players';
+import type { Card, CardSet } from "@/schema/card";
+import type { GameInfo } from "@/schema/game";
+import Players from "@/services/players";
 
 const PlayerTestGameData: GameInfo = {
   currentRound: 1,
-  phase: 'start',
-  order: ['Player1', 'Player2', 'Player3', 'Player4'],
+  phase: "start",
+  order: ["Player1", "Player2", "Player3", "Player4"],
   pot: 0,
   minBetPoint: 0,
   players: {
     Player1: {
-      name: 'Player1',
-      status: 'active',
+      name: "Player1",
+      status: "active",
       point: 37600,
       round: {
         betPoint: 0,
         first: 0,
         second: 0,
-        action: 'bet',
+        action: "bet",
         cards: [],
       },
     },
     Player2: {
-      name: 'Player2',
-      status: 'active',
+      name: "Player2",
+      status: "active",
       point: 17600,
       round: {
         betPoint: 0,
         first: 0,
         second: 0,
-        action: 'bet',
+        action: "bet",
         cards: [],
       },
     },
     Player3: {
-      name: 'Player3',
-      status: 'active',
+      name: "Player3",
+      status: "active",
       point: 24800,
       round: {
         betPoint: 0,
         first: 0,
         second: 0,
-        action: 'bet',
+        action: "bet",
         cards: [],
       },
     },
     Player4: {
-      name: 'Player4',
-      status: 'out',
+      name: "Player4",
+      status: "out",
       point: 0,
       round: {
         betPoint: 0,
@@ -65,35 +65,35 @@ const PlayerTestGameData: GameInfo = {
 
 const cards: CardSet<Card> = [
   {
-    suit: 'Clubs',
+    suit: "Clubs",
     number: 1,
   },
   {
-    suit: 'Diamonds',
+    suit: "Diamonds",
     number: 7,
   },
   {
-    suit: 'Spades',
+    suit: "Spades",
     number: 6,
   },
   {
-    suit: 'Spades',
+    suit: "Spades",
     number: 9,
   },
   {
-    suit: 'Clubs',
+    suit: "Clubs",
     number: 8,
   },
 ];
 
-describe('/demo-player-ts service', () => {
-  const player = new Players.DemoPlayer1('1', 'Player1');
+describe("/demo-player-ts service", () => {
+  const player = new Players.team7_2("1", "team7_1");
 
-  describe('bet function', () => {
-    test('bet-1 phase', () => {
+  describe("bet function", () => {
+    test("bet-1 phase", () => {
       const result = player.bet({
         ...PlayerTestGameData,
-        phase: 'bet-1',
+        phase: "bet-1",
         players: {
           ...PlayerTestGameData.players,
           Player1: {
@@ -106,13 +106,13 @@ describe('/demo-player-ts service', () => {
         },
       });
 
-      expect(typeof result).toBe('number');
+      expect(typeof result).toBe("number");
     });
 
-    test('bet-2 phase', () => {
+    test("bet-2 phase", () => {
       const result = player.bet({
         ...PlayerTestGameData,
-        phase: 'bet-2',
+        phase: "bet-2",
         players: {
           ...PlayerTestGameData.players,
           Player1: {
@@ -125,15 +125,15 @@ describe('/demo-player-ts service', () => {
         },
       });
 
-      expect(typeof result).toBe('number');
+      expect(typeof result).toBe("number");
     });
   });
 
-  describe('draw function', () => {
-    test('draw-1 phase', () => {
+  describe("draw function", () => {
+    test("draw-1 phase", () => {
       const result = player.draw({
         ...PlayerTestGameData,
-        phase: 'draw-1',
+        phase: "draw-1",
         players: {
           ...PlayerTestGameData.players,
           Player1: {
@@ -147,17 +147,17 @@ describe('/demo-player-ts service', () => {
       });
 
       expect(result).toHaveLength(5);
-      expect(typeof result[0]).toBe('boolean');
-      expect(typeof result[1]).toBe('boolean');
-      expect(typeof result[2]).toBe('boolean');
-      expect(typeof result[3]).toBe('boolean');
-      expect(typeof result[4]).toBe('boolean');
+      expect(typeof result[0]).toBe("boolean");
+      expect(typeof result[1]).toBe("boolean");
+      expect(typeof result[2]).toBe("boolean");
+      expect(typeof result[3]).toBe("boolean");
+      expect(typeof result[4]).toBe("boolean");
     });
 
-    test('draw-2 phase', () => {
+    test("draw-2 phase", () => {
       const result = player.draw({
         ...PlayerTestGameData,
-        phase: 'draw-2',
+        phase: "draw-2",
         players: {
           ...PlayerTestGameData.players,
           Player1: {
@@ -171,11 +171,11 @@ describe('/demo-player-ts service', () => {
       });
 
       expect(result).toHaveLength(5);
-      expect(typeof result[0]).toBe('boolean');
-      expect(typeof result[1]).toBe('boolean');
-      expect(typeof result[2]).toBe('boolean');
-      expect(typeof result[3]).toBe('boolean');
-      expect(typeof result[4]).toBe('boolean');
+      expect(typeof result[0]).toBe("boolean");
+      expect(typeof result[1]).toBe("boolean");
+      expect(typeof result[2]).toBe("boolean");
+      expect(typeof result[3]).toBe("boolean");
+      expect(typeof result[4]).toBe("boolean");
     });
   });
 });

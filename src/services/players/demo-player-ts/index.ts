@@ -1,8 +1,8 @@
-import type winston from 'winston';
+import type winston from "winston";
 
-import { getLogger } from '@/libs/logger';
-import type { GameInfo } from '@/schema/game';
-import { randomByNumber } from '@/utils/game';
+import { getLogger } from "@/libs/logger";
+import type { GameInfo } from "@/schema/game";
+import { randomByNumber } from "@/utils/game";
 
 class TsPlayer {
   private logger: winston.Logger | null | undefined; // player logger
@@ -18,7 +18,7 @@ class TsPlayer {
   private win: number; // 勝数
 
   constructor(id: string, name: string) {
-    this.logger = getLogger({ group: 'player', gameId: id, playerName: name });
+    this.logger = getLogger({ group: "player", gameId: id, playerName: name });
     this.id = id;
     this.name = name;
     this.round = 0;
@@ -46,7 +46,7 @@ class TsPlayer {
    */
   private startRound(data: GameInfo): void {
     this.round = data.currentRound;
-    this.logger?.info(this.formattedLog('Round start.'));
+    this.logger?.info(this.formattedLog("Round start."));
 
     // 各プレイヤーの情報をログに出力する
     Object.values(data.players).forEach((player) => {
@@ -99,11 +99,11 @@ class TsPlayer {
 
     if (canRaise) {
       // レイズが宣言できる場合
-      if (data.phase === 'bet-1') {
+      if (data.phase === "bet-1") {
         // 1回目のベットフェーズ
         // このプログラムでは1回目のベットフェーズで、誰も賭けていなければベットを行う
         if (!data.minBetPoint) return this.betUnit;
-      } else if (data.phase === 'bet-2') {
+      } else if (data.phase === "bet-2") {
         // 2回目のベットフェーズ
         // このプログラムでは2回目のベットフェーズで、初期ポイントの1/10以上の値が賭けられていなければレイズを宣言する
         if (data.minBetPoint < data.initialPoint / 10) return this.betUnit; // stackがbetUnit賭けポイントを追加する単位より大きければレイズ、小さければオール・インとなる（このプログラムではレイズを宣言する時betPoint分のポイントを追加する）

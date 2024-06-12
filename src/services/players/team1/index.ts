@@ -84,7 +84,7 @@ class TsPlayer {
       )
     );
 
-    // 各プレイヤーの情報をログに出力する 
+    // 各プレイヤーの情報をログに出力する
     Object.values(data.players).forEach((player) => {
       this.logger?.debug(
         this.formattedLog(
@@ -93,7 +93,6 @@ class TsPlayer {
       );
     });
 
-<<<<<<< HEAD
     // ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていたらドロップする）
     //if (data.minBetPoint > data.initialPoint / 2) return -1;  ここを変更
     //ドロップ宣言をするかを決める（このプログラムでは最低賭けポイントが初期ポイントの半分を超えていてかつhandrankがnopairの場合ドロップする）
@@ -113,8 +112,6 @@ class TsPlayer {
       }
     }
     //ここにフォール度条件の追加を記述すべし
-=======
->>>>>>> ba44486f8325538207dc4929b8abdf3c3d7b1810
     const self = data.players[this.name]; // 自身のデータ
     const diff = data.minBetPoint - (self?.round.betPoint ?? 0); // 現在の最低賭けポイントと既に賭けたポイントとの差額
     this.logger?.info(
@@ -180,7 +177,7 @@ class TsPlayer {
     const declareAllIn = randomByNumber(1000) < 1; // オール・インを宣言するか（このプログラムでは1/1000の確率でオール・インを宣言する）
     return declareAllIn ? stack : 0; // オール・インまたはコール
   }
-      
+
   /**
    * 交換する手札を選択する
    * @param data

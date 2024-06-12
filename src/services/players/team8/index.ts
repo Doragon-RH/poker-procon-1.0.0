@@ -143,7 +143,7 @@ class TsPlayer {
       // スリーカード以下の場合
       // 所持ポイントに余裕があればコール
       if (canRaise) {
-        if (point / 20 < data.minBetPoint) return -1;
+        if (point / 8 < data.minBetPoint) return -1;
         return 0;
       }
       // そうでなければドロップ
