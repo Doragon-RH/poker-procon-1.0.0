@@ -12,3 +12,4 @@ npm run dev
 ※[http://localhost:3000/games](http://localhost:3000/games) にリダイレクトします。
 
 編集する部分：src/services/players 内のファイル
+バク発生のため、新規リポジトリにて開発移行
