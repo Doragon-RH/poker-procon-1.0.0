@@ -1,5 +1,3 @@
-
-https://github.com/user-attachments/assets/877a8c20-1029-413f-ab54-4cc8561b3cc9
 # README
 ## dodaキャンパス主催のポーカーハッカソン
 今回のハッカソンでは、ポーカーゲームのプレイヤープログラムを即席チームで開発しました。
