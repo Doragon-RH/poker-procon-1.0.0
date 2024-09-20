@@ -1,5 +1,14 @@
-# README
 
+https://github.com/user-attachments/assets/877a8c20-1029-413f-ab54-4cc8561b3cc9
+# README
+## dodaキャンパス主催のポーカーハッカソン
+今回のハッカソンでは、ポーカーゲームのプレイヤープログラムを即席チームで開発しました。
+
+変更したディレクトリは src/services/players です
+
+また、挙動については以下のようになっています。
+
+https://github.com/user-attachments/assets/13b755d1-c54f-40e6-9090-40431df50341
 ## はじめに
 
 開発サーバを起動します。
